@@ -2,15 +2,30 @@
 //assíncrono = há tarefas executadas em segundo plano
 
 async function buscaEndereco(cep) {
+    let mensagemErro = document.getElementById('erro');
+    mensagemErro.innerHTML = "";
+
     try {
         let consultaCEP = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         let consultaCEPConverida = await consultaCEP.json();
         if (consultaCEPConverida.erro) {
             throw Error('CEP não existente!');
         }
+
+        let cidade = document.getElementById('cidade');
+        let logradouro = document.getElementById('endereco');
+        let estado = document.getElementById('estado');
+        let bairro = document.getElementById('bairro');
+
+        cidade.value = consultaCEPConverida.localidade;
+        logradouro.value = consultaCEPConverida.logradouro;
+        estado.value = consultaCEPConverida.uf;
+        bairro.value = consultaCEPConverida.bairro;
+
         console.log(consultaCEPConverida);
         return consultaCEPConverida;
     } catch (erro) {
+        mensagemErro.innerHTML = `<p>CEP inválido. Tente novamente!</p>`;
         console.log(erro);
     }
 }
